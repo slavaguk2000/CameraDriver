@@ -1,5 +1,5 @@
 import pygame
-# import serial
+import serial
 import struct
 import time
 
@@ -15,13 +15,15 @@ pygame.init()
 pygame.joystick.init()
 
 # Настройки для последовательного порта
-# serialPort = serial.Serial(port='COM3', baudrate=115200, timeout=1)  # Замените 'COM3' на ваш порт
+serialPort = serial.Serial(port='COM4', baudrate=115200, timeout=1)  # Замените 'COM3' на ваш порт
 
 # Функция для отправки данных через Serial
 def send_data(x, y):
-    # Форматирование данных в соответствии с требуемым форматом (int16)
-    data = struct.pack('<hh', int(x), int(y))
-    # serialPort.write(data)
+    sending_x = x + 5000
+    sending_y = y + 5000
+
+    data = struct.pack('>BBBBBBBB', 255, min(int(sending_x / 100), 99), int(sending_x % 100), min(int(sending_y / 100), 99), int(sending_y % 100), 0, 0, 0)
+    serialPort.write(data)
 
 def normalize_value(value, min_zero, max_zero):
     return max(value - max_zero, 0) if value > 0 else min(value - min_zero, 0)
@@ -41,8 +43,8 @@ try:
                 running = False
 
         # Получение положения осей джойстика
-        x = normalize_value(pow(joystick.get_axis(0), 3) * 32767, MIN_X_ZERO, MAX_X_ZERO)  # Умножаем на 32767 для преобразования в int16
-        y = normalize_value(pow(joystick.get_axis(1), 3) * (-32767), MIN_Y_ZERO, MAX_Y_ZERO)
+        x = normalize_value(pow(joystick.get_axis(0), 3) * 4999, MIN_X_ZERO, MAX_X_ZERO)  # Умножаем на 32767 для преобразования в int16
+        y = normalize_value(pow(joystick.get_axis(1), 3) * (-4999), MIN_Y_ZERO, MAX_Y_ZERO)
 
         # Отправка данных через Serial
         send_data(x, y)
