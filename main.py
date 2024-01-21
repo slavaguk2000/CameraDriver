@@ -3,8 +3,8 @@ import serial
 import struct
 import time
 
-MIN_X_ZERO = 0
-MIN_Y_ZERO = 0
+MIN_X_ZERO = -0.0469
+MIN_Y_ZERO = -0.024
 MAX_X_ZERO = 0.024
 MAX_Y_ZERO = 0
 
@@ -63,6 +63,7 @@ try:
         send_data(x, y)
 
         # Вывод данных на экран
+        print(joystick.get_axis(1))
         print(f"x: {int(x)}, y: {int(y)}")
         print(f"x: {x}, y: {y}")
 
