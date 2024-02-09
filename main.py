@@ -4,7 +4,7 @@ import struct
 import time
 
 MIN_X_ZERO = -0.0469
-MIN_Y_ZERO = -0.024
+MIN_Y_ZERO = -0.04
 MAX_X_ZERO = 0.024
 MAX_Y_ZERO = 0
 
@@ -56,16 +56,17 @@ try:
                 running = False
 
         # Получение положения осей джойстика
-        x = get_value_between(pow(normalize_value(joystick.get_axis(0), MIN_X_ZERO, MAX_X_ZERO), 5), MIN_X_SPEED, MAX_X_SPEED)
-        y = get_value_between(pow(normalize_value(joystick.get_axis(1), MIN_Y_ZERO, MAX_Y_ZERO), 5), MIN_Y_SPEED, MAX_Y_SPEED)
+        raw_x = joystick.get_axis(0)
+        raw_y = joystick.get_axis(1)
+        x = get_value_between(pow(normalize_value(raw_x, MIN_X_ZERO, MAX_X_ZERO), 5), MIN_X_SPEED, MAX_X_SPEED)
+        y = get_value_between(pow(normalize_value(raw_y, MIN_Y_ZERO, MAX_Y_ZERO), 5), MIN_Y_SPEED, MAX_Y_SPEED)
 
         # Отправка данных через Serial
         send_data(x, y)
 
         # Вывод данных на экран
-        print(joystick.get_axis(1))
         print(f"x: {int(x)}, y: {int(y)}")
-        print(f"x: {x}, y: {y}")
+        print(f"raw x: {raw_x}, raw y: {raw_y}")
 
         # Поддержание частоты отправки в 100 Гц
         time.sleep(max(0, 0.01 - (time.time() - start_time)))
